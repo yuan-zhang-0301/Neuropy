@@ -1,2 +1,22 @@
-venv
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# Firebase credentials
 neuropyhomehub-firebase-adminsdk-fbsvc-d5c5832f08.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Local development settings
+.env
