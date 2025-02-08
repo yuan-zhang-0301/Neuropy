@@ -14,7 +14,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("neuropyhomehub-firebase-adminsdk-fbsvc-d5c5832f08.json")
+cred = credentials.Certificate("neuropyhomehub-firebase-adminsdk-fbsvc-45769b4c9f.json")
 try:
     firebase_admin.get_app()
 except ValueError:

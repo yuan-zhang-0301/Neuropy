@@ -16,7 +16,7 @@ from hume import MicrophoneInterface, Stream
 load_dotenv()
 
 # Firebase setup
-cred = credentials.Certificate("neuropyhomehub-firebase-adminsdk-fbsvc-d5c5832f08.json")
+cred = credentials.Certificate("neuropyhomehub-firebase-adminsdk-fbsvc-45769b4c9f.json")
 try:
     firebase_admin.get_app()
 except ValueError:
@@ -107,15 +107,33 @@ class WebSocketHandler:
         print(f"|{formatted_emotions}|")
 
 def save_chat_to_firestore(chat_id, messages):
-    """Save the conversation to Firestore."""
+    """Save the conversation to Firestore, including only user messages with their top 3 emotions."""
+    user_messages = []
+    for msg in messages:
+        if msg["role"] == "USER":
+            # Get top 3 emotions for the message
+            emotions = dict(sorted(
+                msg["emotions"].items(), 
+                key=lambda x: x[1], 
+                reverse=True
+            )[:3]) if msg["emotions"] else {}
+            
+            # Create filtered message object
+            filtered_msg = {
+                "message": msg["message"],
+                "timestamp": msg["timestamp"],
+                "emotions": emotions
+            }
+            user_messages.append(filtered_msg)
+
     chat_data = {
         "chat_id": chat_id,
-        "messages": messages,
+        "messages": user_messages,
         "timestamp": firestore.SERVER_TIMESTAMP
     }
     try:
         db.collection("Hume").document(chat_id).set(chat_data)
-        print(f"Chat {chat_id} saved to Firestore.")
+        print(f"Chat {chat_id} saved to Firestore (user messages with top 3 emotions).")
     except Exception as e:
         print(f"Error saving chat to Firestore: {e}")
 
